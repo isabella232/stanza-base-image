@@ -93,7 +93,7 @@ jobs:
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
 
       - name: Release
-        uses: Industrial/push-docker-gcr
+        uses: kurkop/push-docker-gcr@v1.2.2
         with:
           docker_image_name: stanza-base
           docker_image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
