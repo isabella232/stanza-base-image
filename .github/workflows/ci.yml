@@ -53,7 +53,7 @@ jobs:
 
       - name: Load image
         run: |
-          docker import /tmp/stanza-base.tar stanza-base:latest
+          docker import - stanza-base:latest < /tmp/stanza-base.tar
 
       - name: Start test container
         run: |
@@ -84,7 +84,7 @@ jobs:
 
       - name: Load image
         run: |
-          docker import /tmp/stanza-base.tar stanza-base:latest
+          docker import - stanza-base:latest < /tmp/stanza-base.tar
 
       - name: Get the version
         id: get_tag_name
