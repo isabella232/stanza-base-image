@@ -9,19 +9,21 @@ on:
     tags:
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      
+
+      - name: lint
+        run: docker run --rm -i hadolint/hadolint < Dockerfile
+
       - name: build
         run: docker build .
-
-  verify:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
       - name: install cinc
         run: |
@@ -29,7 +31,7 @@ jobs:
           sudo bash -s -- -P cinc-auditor -v 4
 
   release:
-    needs: verify
+    needs: build
     # skip release unless new tag triggered the workflow
     if: github.event_name == 'create'
     runs-on: ubuntu-latest
