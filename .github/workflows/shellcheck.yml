@@ -2,14 +2,10 @@
 ---
 name: shellcheck
 on:
-  pull_request:
-      paths:
-      - "./scripts/**"
   push:
-      paths:
-      - "./scripts/**"
-      branches:
+    branches:
       - master
+  pull_request:
 jobs:
   shellcheck:
     name: Shellcheck
