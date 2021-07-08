@@ -80,11 +80,7 @@ jobs:
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
 
       - name: Release
-        uses: raccoondev/push-docker-gcr
-        with:
-          gcr_host: gcr.io
-          image_name: stanza-base
-          image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-          env:
-            GCLOUD_SERVICE_KEY: "${{ secrets.GCLOUD_SERVICE_KEY }}"
+        run: ./scripts/release.sh
+        env:
+            GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
             GOOGLE_PROJECT_ID: "observiq-container-images"
