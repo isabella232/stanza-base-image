@@ -21,7 +21,7 @@ jobs:
         run: docker build . -t stanza-base:latest
 
       - name: Export
-        run: docker save -o /tmp/stanza-base.tar stanza-base:latest/tmp/stanza-base.tar
+        run: docker save -o /tmp/stanza-base.tar stanza-base:latest
 
       - name: Upload artifact
         uses: actions/upload-artifact@v2
