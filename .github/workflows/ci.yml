@@ -80,11 +80,7 @@ jobs:
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
 
       - name: Release
-        uses: kurkop/push-docker-gcr@v1.2.2
-        with:
-          docker_image_name: stanza-base
-          docker_image_tag: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-          docker_context: ./
-          gcr_host: gcr.io
-          gcr_project_id: observiq-container-images
-          gcr_service_key: ${{ secrets.GCLOUD_SERVICE_KEY }}
+        run: ./scripts/release.sh
+        env:
+            GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+            GOOGLE_PROJECT_ID: "observiq-container-images"
