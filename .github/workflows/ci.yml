@@ -20,6 +20,12 @@ jobs:
       - name: Build
         run: docker build . -t stanza-base
 
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
       - name: Install Cinc
         run: |
           curl -L https://omnitruck.cinc.sh/install.sh | \
@@ -32,11 +38,11 @@ jobs:
             --entrypoint=/bin/sleep \
             stanza-base 3600
 
-      - name: Run integration tests
+      - name: Run tests
         run: cinc-auditor exec test/integration.rb -t docker://test
 
   release:
-    needs: build
+    needs: test
     # skip release unless new tag triggered the workflow
     if: github.event_name == 'create'
     runs-on: ubuntu-latest
