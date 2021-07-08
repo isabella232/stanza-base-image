@@ -84,3 +84,5 @@ jobs:
         env:
             GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
             GOOGLE_PROJECT_ID: "observiq-container-images"
+            IMAGE_NAME: stanza-base
+            IMAGE_TAG: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
