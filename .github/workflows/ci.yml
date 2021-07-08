@@ -14,16 +14,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build
+      - name: Build Image
         run: docker build . -t stanza-base:latest
 
-      - name: Export
+      - name: Export Image
         run: docker save -o /tmp/stanza-base.tar stanza-base:latest
 
-      - name: Upload artifact
+      - name: Share Exported Image
         uses: actions/upload-artifact@v2
         with:
           name: stanza-base
@@ -40,24 +37,24 @@ jobs:
           curl -L https://omnitruck.cinc.sh/install.sh | \
           sudo bash -s -- -P cinc-auditor -v 4
 
-      - name: Download artifact
+      - name: Download Image
         uses: actions/download-artifact@v2
         with:
           name: stanza-base
           path: /tmp
 
-      - name: Load image
+      - name: Load Image
         run: |
-          docker import - stanza-base:latest < /tmp/stanza-base.tar
+          docker load < /tmp/stanza-base.tar
 
-      - name: Start test container
+      - name: Start Test Container
         run: |
           docker run -d \
             --name test \
             --entrypoint=/bin/sleep \
             stanza-base:latest 3600
 
-      - name: Run tests
+      - name: Run Tests
         run: cinc-auditor exec test/integration.rb -t docker://test
 
   release:
@@ -68,17 +65,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Download artifact
+      - name: Download Image
         uses: actions/download-artifact@v2
         with:
           name: stanza-base
           path: /tmp
 
-      - name: Load image
+      - name: Load Image
         run: |
-          docker import - stanza-base:latest < /tmp/stanza-base.tar
+          docker load < /tmp/stanza-base.tar
 
-      - name: Get the version
+      - name: Get Tag
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
 
