@@ -7,4 +7,5 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update \
     && jq -r 'to_entries | .[] | .key + "=" + .value' /tmp/dependencies.json | xargs apt-get install -y --no-install-recommends \
     && rm /tmp/dependencies.json \
     && apt-get purge -y jq \
-    && apt-get clean
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
