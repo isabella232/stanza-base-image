@@ -1,15 +1,10 @@
 FROM ubuntu:20.04
 
-ARG systemd_version="245.4-4ubuntu3.7"
-ARG tzdata_version="2021a-0ubuntu0.20.04"
-ARG certificates_version="20210119~20.04.1"
+COPY dependencies.json /tmp/dependencies.json
 
-
-RUN \
-    apt-get update && \
-    DEBIAN_FRONTEND="noninteractive" TZ="UTC" apt-get install -y \
-        --no-install-recommends \
-        "ca-certificates=${certificates_version}" \
-        "systemd=${systemd_version}" \
-        "tzdata=${tzdata_version}" && \
-    rm -rf /var/lib/apt/lists/*
+RUN DEBIAN_FRONTEND=noninteractive apt-get update \
+    && apt-get install -y --no-install-recommends jq \
+    && jq -r 'to_entries | .[] | .key + "=" + .value' /tmp/dependencies.json | xargs apt-get install -y --no-install-recommends \
+    && rm /tmp/dependencies.json \
+    && apt-get purge -y jq \
+    && apt-get clean
