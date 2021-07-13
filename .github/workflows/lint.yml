@@ -10,4 +10,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Lint
-        run: docker run --rm -i hadolint/hadolint < Dockerfile
+        run: |
+          docker run --rm -i \
+            --entrypoint=/bin/hadolint hadolint/hadolint - \
+            --ignore DL3008 \
+            --ignore DL4006 \
+            < Dockerfile

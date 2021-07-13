@@ -37,6 +37,13 @@ jobs:
           curl -L https://omnitruck.cinc.sh/install.sh | \
           sudo bash -s -- -P cinc-auditor -v 4
 
+      - name: Install Gomplate
+        run: |
+          curl -L \
+            https://github.com/hairyhenderson/gomplate/releases/download/v3.9.0/gomplate_linux-amd64 \
+            -o gomplate
+          chmod +x gomplate
+
       - name: Download Image
         uses: actions/download-artifact@v2
         with:
@@ -53,6 +60,12 @@ jobs:
             --name test \
             --entrypoint=/bin/sleep \
             stanza-base:latest 3600
+
+      - name: Generate Tests
+        run: |
+          ./gomplate \
+            --datasource data=dependencies.json \
+            --file test/integration.template > test/integration.rb
 
       - name: Run Tests
         run: cinc-auditor exec test/integration.rb -t docker://test
