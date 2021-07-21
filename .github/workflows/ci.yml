@@ -48,7 +48,6 @@ jobs:
       - name: Get Tag
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-        if: github.event_name == 'create'
 
       - name: Release
         run: ./scripts/release.sh
@@ -56,7 +55,6 @@ jobs:
             GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
             IMAGE_NAME: stanza-base
             IMAGE_TAG: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-        if: github.event_name == 'create'
 
 
              
