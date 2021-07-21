@@ -8,6 +8,9 @@ then
 fi
 
 IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
+
+echo "using image ${IMAGE}"
+
 echo "${GCLOUD_SERVICE_KEY}" | docker login -u _json_key --password-stdin https://gcr.io/
 docker tag "${IMAGE_NAME}:latest" "${IMAGE}"
 docker tag "${IMAGE}" "gcr.io/observiq-container-images/${IMAGE}"
