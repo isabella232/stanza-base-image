@@ -2,7 +2,7 @@
 
 set -e
 
-if echo "${IMAGE_TAG}" | grep '\(merge\|pull\)'
+if echo "${IMAGE_TAG}" | grep '\(merge\|pull\|master\)'
 then
     echo "image tag not set, skipping release"
     exit 0
