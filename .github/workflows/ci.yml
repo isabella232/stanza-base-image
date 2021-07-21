@@ -14,28 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: kolpav/purge-artifacts-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          expire-in: 0days
-
       - name: Build Image
         run: docker build . -t stanza-base:latest
-
-      - name: Export Image
-        run: docker save -o /tmp/stanza-base.tar stanza-base:latest
-
-      - name: Share Exported Image
-        uses: actions/upload-artifact@v2
-        with:
-          name: stanza-base
-          path: /tmp/stanza-base.tar
-
-  test:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
 
       - name: Install Cinc
         run: |
@@ -48,16 +28,6 @@ jobs:
             https://github.com/hairyhenderson/gomplate/releases/download/v3.9.0/gomplate_linux-amd64 \
             -o gomplate
           chmod +x gomplate
-
-      - name: Download Image
-        uses: actions/download-artifact@v2
-        with:
-          name: stanza-base
-          path: /tmp
-
-      - name: Load Image
-        run: |
-          docker load < /tmp/stanza-base.tar
 
       - name: Start Test Container
         run: |
@@ -75,27 +45,10 @@ jobs:
       - name: Run Tests
         run: cinc-auditor exec test/integration.rb -t docker://test
 
-  release:
-    needs: test
-    # skip release unless new tag triggered the workflow
-    if: github.event_name == 'create'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Download Image
-        uses: actions/download-artifact@v2
-        with:
-          name: stanza-base
-          path: /tmp
-
-      - name: Load Image
-        run: |
-          docker load < /tmp/stanza-base.tar
-
       - name: Get Tag
         id: get_tag_name
         run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
+        if: github.event_name == 'create'
 
       - name: Release
         run: ./scripts/release.sh
@@ -103,3 +56,7 @@ jobs:
             GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
             IMAGE_NAME: stanza-base
             IMAGE_TAG: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
+        if: github.event_name == 'create'
+
+
+             
