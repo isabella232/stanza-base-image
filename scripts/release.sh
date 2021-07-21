@@ -5,6 +5,7 @@ set -e
 if echo "${IMAGE_TAG}" | grep '\(merge\|pull\)'
 then
     echo "image tag not set, skipping release"
+    exit 0
 fi
 
 IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
