@@ -2,9 +2,9 @@
 
 set -e
 
-if [ -z "$IMAGE_TAG" ]
+if echo "${IMAGE_TAG}" | grep '\(merge\|pull\)'
 then
-      echo "${IMAGE_TAG} not set, skipping release"
+    echo "image tag not set, skipping release"
 fi
 
 IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
