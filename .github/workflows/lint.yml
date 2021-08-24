@@ -15,4 +15,5 @@ jobs:
             --entrypoint=/bin/hadolint hadolint/hadolint - \
             --ignore DL3008 \
             --ignore DL4006 \
+            --ignore DL3059 \
             < Dockerfile
