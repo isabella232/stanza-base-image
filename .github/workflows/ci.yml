@@ -36,15 +36,10 @@ jobs:
         uses: docker/setup-qemu-action@v1
 
       - name: Build Image
-        run: |
-          docker buildx build \
-            --platform linux/amd64,linux/arm64 \
-            --tag gcr.io/observiq-container-images/stanza-base:$(git rev-parse --short HEAD) \
-            --build-arg dependencies="$(jq -r 'to_entries | .[] | .key + "=" + .value' dependencies.json)" \
-            --push \
-            .
+        run: ./scripts/build.sh
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
 
       - name: Install Cinc
         run: |
