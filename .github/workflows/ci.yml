@@ -32,6 +32,9 @@ jobs:
           docker buildx create --name stanza --driver docker-container --use
           docker buildx inspect --bootstrap
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
       - name: Build Image
         run: |
           docker buildx build \
