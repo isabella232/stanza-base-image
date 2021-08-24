@@ -39,8 +39,9 @@ jobs:
         run: |
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
-            --tag stanza-base:latest \
+            --tag gcr.io/observiq-container-images/stanza-base:$(git rev-parse --short HEAD) \
             --build-arg dependencies="$(jq -r 'to_entries | .[] | .key + "=" + .value' dependencies.json)" \
+            --push \
             .
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
@@ -62,7 +63,8 @@ jobs:
           docker run -d \
             --name test \
             --entrypoint=/bin/sleep \
-            stanza-base:latest 3600
+            gcr.io/observiq-container-images/stanza-base:$(git rev-parse --short HEAD) \
+            3600
 
       - name: Generate Tests
         run: |
