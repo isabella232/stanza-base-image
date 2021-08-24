@@ -27,6 +27,7 @@ jobs:
           docker buildx build \
             --platform linux/amd64,linux/arm64 \
             --tag stanza-base:latest \
+            --build-arg dependencies="$(jq -r 'to_entries | .[] | .key + "=" + .value' dependencies.json)" \
             .
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
