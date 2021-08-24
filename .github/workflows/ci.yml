@@ -14,8 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - name: Configure Docker Buildx
+        run: |
+          mkdir -p ~/.docker/cli-plugins
+          curl -fL https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
+          chmod a+x ~/.docker/cli-plugins/docker-buildx
+          docker buildx create --name stanza --use
+          docker buildx inspect --bootstrap
+
       - name: Build Image
-        run: docker build . -t stanza-base:latest
+        run: |
+          docker buildx build \
+            --platform linux/amd64,linux/arm64 \
+            --tag stanza-base:latest \
+            .
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
 
       - name: Install Cinc
         run: |

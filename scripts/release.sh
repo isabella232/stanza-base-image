@@ -13,6 +13,9 @@ IMAGE="${IMAGE_NAME}:${IMAGE_TAG}"
 echo "using image ${IMAGE}"
 
 echo "${GCLOUD_SERVICE_KEY}" | docker login -u _json_key --password-stdin https://gcr.io/
-docker tag "${IMAGE_NAME}:latest" "${IMAGE}"
-docker tag "${IMAGE}" "gcr.io/observiq-container-images/${IMAGE}"
-docker push "gcr.io/observiq-container-images/${IMAGE}"
+
+docker buildx build \
+    --platform linux/amd64,linux/arm64 \
+    --tag "gcr.io/observiq-container-images/${IMAGE}" \
+    --push \
+    .
