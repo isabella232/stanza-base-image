@@ -12,4 +12,6 @@ RUN \
     echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && echo ${dependencies} | xargs apt-get install -y --no-install-recommends
+    && echo ${dependencies} | xargs apt-get install -y --no-install-recommends && \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
