@@ -10,12 +10,36 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
 
+      - name: Install Latest Docker
+        run: |
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu  $(lsb_release -cs)  stable"
+          sudo apt-get update
+          sudo apt-get install docker-ce
+
+      - name: Check Docker Version
+        run: docker --version
+
+      - name: Configure Docker Buildx
+        run: |
+          mkdir -p ~/.docker/cli-plugins
+          curl -fL https://github.com/docker/buildx/releases/download/v0.6.1/buildx-v0.6.1.linux-amd64 -o ~/.docker/cli-plugins/docker-buildx
+          chmod a+x ~/.docker/cli-plugins/docker-buildx
+          docker buildx create --name stanza --driver docker-container --use
+          docker buildx inspect --bootstrap
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+
       - name: Build Image
-        run: docker build . -t stanza-base:latest
+        run: ./scripts/build.sh
+        env:
+          DOCKER_CLI_EXPERIMENTAL: enabled
+          GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
 
       - name: Install Cinc
         run: |
@@ -34,7 +58,8 @@ jobs:
           docker run -d \
             --name test \
             --entrypoint=/bin/sleep \
-            stanza-base:latest 3600
+            gcr.io/observiq-container-images/stanza-base:$(git rev-parse --short HEAD) \
+            3600
 
       - name: Generate Tests
         run: |
