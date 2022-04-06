@@ -11,7 +11,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2.3.4
 
-    # run script inside docker image ubuntu:20.10 to match
+    # run script inside docker image ubuntu:22.04 to match
     # the base image used in this repo's Dockerfile. Github actions
     # is running in ubuntu 20.04, which will not give us the correct
     # apt package versions
@@ -19,7 +19,7 @@ jobs:
       run: |
         docker run \
           -v $(pwd):/repo \
-          -w /repo ubuntu:20.10 \
+          -w /repo ubuntu:22.04 \
           sh scripts/update_dependencies.sh
     - name: Create PR
       uses: peter-evans/create-pull-request@v3
