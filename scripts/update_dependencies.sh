@@ -3,7 +3,7 @@
 set -e
 
 apt-get update -qq -o=Dpkg::Use-Pty=0
-apt-get install -qq -o=Dpkg::Use-Pty=0 -y python jq
+apt-get install -qq -o=Dpkg::Use-Pty=0 -y python3 jq
 
 JSON=$( cat dependencies.json )
 echo "detecting versions for ${JSON}"
