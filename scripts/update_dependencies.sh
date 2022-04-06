@@ -13,4 +13,4 @@ for PACKAGE in $( echo "${JSON}" | jq -r 'keys | .[]' ); do
 	JSON=$( echo "${JSON}" | jq '.[$package] = $version' --arg package "${PACKAGE}" --arg version "${VERSION}" )
 done
 
-echo "${JSON}" | python -m json.tool > dependencies.json
+echo "${JSON}" | python3 -m json.tool > dependencies.json
