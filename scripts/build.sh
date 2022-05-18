@@ -9,6 +9,6 @@ TAG="$(git rev-parse --short HEAD)"
 docker buildx build \
     --platform linux/amd64,linux/arm64 \
     --tag "gcr.io/observiq-container-images/stanza-base:${TAG}" \
-    --build-arg dependencies="$(jq -r 'to_entries | .[] | .key + "=" + .value' dependencies.json)" \
+    --build-arg dependencies="$(jq -r 'to_entries | .[] | .key + "=" + .value' dependencies.json | xargs)" \
     --push \
     .
