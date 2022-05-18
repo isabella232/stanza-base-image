@@ -35,11 +35,16 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
+      - name: Get Tag
+        id: get_tag_name
+        run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
+
       - name: Build Image
         run: ./scripts/build.sh
         env:
           DOCKER_CLI_EXPERIMENTAL: enabled
           GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
+          IMAGE_TAG: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
 
       - name: Install Cinc
         run: |
@@ -69,17 +74,3 @@ jobs:
 
       - name: Run Tests
         run: cinc-auditor exec test/integration.rb -t docker://test
-
-      - name: Get Tag
-        id: get_tag_name
-        run: echo ::set-output name=GIT_TAG_NAME::${GITHUB_REF/refs\/tags\//}
-
-      - name: Release
-        run: ./scripts/release.sh
-        env:
-            GCLOUD_SERVICE_KEY: ${{ secrets.GCLOUD_SERVICE_KEY }}
-            IMAGE_NAME: stanza-base
-            IMAGE_TAG: ${{ steps.get_tag_name.outputs.GIT_TAG_NAME}}
-
-
-             
