@@ -11,5 +11,6 @@ RUN \
     ln -s /bin/rm /usr/sbin/rm && \
     echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update \
-    && echo ${dependencies} | xargs apt-get install -y --no-install-recommends
+RUN \
+    DEBIAN_FRONTEND=noninteractive apt-get update \
+    && eval apt-get install -y --no-install-recommends "$dependencies"
