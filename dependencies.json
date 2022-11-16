@@ -1,5 +1,5 @@
 {
     "ca-certificates": "20211016",
     "systemd": "249.11-0ubuntu3.6",
-    "tzdata": "2022f-0ubuntu0.22.04.0"
+    "tzdata": "2022f-0ubuntu0.22.04.1"
 }
